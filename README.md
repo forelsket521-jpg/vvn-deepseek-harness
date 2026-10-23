@@ -18,9 +18,6 @@ DeepSeek Harness 的清洗与提示词注入工具。带图形界面，双击就
 上游版权声明在 `kit/plugins/vvn/ATTRIBUTION.md` 和 `LICENSE`，
 按 MIT 协议的要求保留，未做修改。
 
-**不要以为这个插件是我写的。** 我做的事是：
-改包名、修缺陷、加图形界面、把界面从 dsh 里搬出来。
-
 ---
 
 ## 快速开始
