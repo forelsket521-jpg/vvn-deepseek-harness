@@ -1,0 +1,41 @@
+# dsh-scrub bundle patch
+#
+# 装法（profile 里加一条依赖 + 让 bundle patch 生效）见 README「安装」。
+# 本文件做三件事：
+#   1. 压掉官方 Harness 自我介绍（人格位留给注入稿）；
+#   2. 关掉 dsh-purge 的注入/面板，避免两套同时往 system prompt 塞段；
+#   3. 插入 dsh-scrub 本体（工具 + 提示词段 + /scrub 面板）。
+
+- id: system-prompt
+  config:
+    includeHarnessIdentity: false
+    personaPrefix: ""
+    personaSuffix: Your working directory is {{cwd}}.
+
+# 与 dsh-purge 二选一：默认让 dsh-scrub 接管，把旧的关掉。
+# 想并存就把这段删掉，并把 dsh-purge 的 order 调开（两套注入会叠字）。
+- id: dsh-purge
+  disabled: true
+
+- id: dsh-purge-redteam
+  disabled: true
+
+- id: dsh-purge-redteam-store
+  disabled: true
+
+- id: dsh-purge-redteam-ui
+  disabled: true
+
+- insert:
+    - id: dsh-scrub
+      name: 'dsh-scrub'
+      inject: [systemPrompt, tools]
+      config:
+        enabled: true
+        injected: true
+        caps: true
+        panel: true
+        order: -100000
+        tailPrompt: ""
+        tailOrder: 5100
+        verbose: false

@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<!-- 内嵌 WebBrowser 认这一行；没有它 IE 会退回 IE7 渲染，CSS 全塌 -->
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>vvn · dsh 清洗控制台</title>
+<link rel="stylesheet" href="/scrub/style.css" />
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <h1>vvn</h1>
+    <span>dsh 清洗宿主</span>
+  </div>
+  <div class="meta">
+    <span class="pill" id="pill-surface">—</span>
+    <span class="path" id="pill-aibase" title="">—</span>
+  </div>
+  <div class="actions">
+    <button id="btn-verify">验收</button>
+    <button class="primary" id="btn-apply-all">全部应用</button>
+    <button id="btn-dry-all">试运行</button>
+    <button id="btn-refresh">刷新</button>
+  </div>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button data-tab="overview" class="active">概览</button>
+  <button data-tab="patches">清洗宿主</button>
+  <button data-tab="prompt">注入稿</button>
+  <button data-tab="rules">规则</button>
+  <button data-tab="presets">预设</button>
+</nav>
+
+<main>
+  <!-- 概览 -->
+  <section class="tab" id="tab-overview">
+    <div class="metrics" id="metrics"></div>
+    <div class="panel" id="verify-box" hidden>
+      <div class="panel-hd">破甲验收<span class="hint" id="verify-verdict"></span></div>
+      <div class="panel-bd" id="verify-body"></div>
+    </div>
+    <div class="cols">
+      <div class="panel">
+        <div class="panel-hd">待处理</div>
+        <div class="panel-bd" id="overview-pending"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-hd">当前配置</div>
+        <div class="panel-bd kv" id="overview-config"></div>
+      </div>
+    </div>
+    <div class="logbox" id="overview-log"></div>
+  </section>
+
+  <!-- 清洗宿主 -->
+  <section class="tab" id="tab-patches" hidden>
+    <div class="bigbar">
+      <button class="huge" id="btn-auto">自动清洗宿主</button>
+      <span class="bighint" id="auto-hint">一键把全部补丁写入宿主，自动拍快照、自动跳过不适用的</span>
+      <span class="spacer"></span>
+      <button id="btn-revert-sel">回滚选中</button>
+      <button id="btn-export">导出报告</button>
+    </div>
+
+    <!-- 大号结果徽章：给不看日志的人看的 -->
+    <div class="badge" id="badge" hidden></div>
+    <div class="toolbar">
+      <select id="f-layer"><option value="">全部层级</option></select>
+      <select id="f-status">
+        <option value="">全部状态</option>
+        <option value="applied">已应用</option>
+        <option value="pending">待应用</option>
+        <option value="skipped">已跳过</option>
+        <option value="missing">缺文件</option>
+        <option value="na">不适用</option>
+      </select>
+      <input id="f-text" placeholder="搜索名称 / 编号 / 说明" />
+      <span class="spacer"></span>
+      <button id="btn-select-visible">选择可见</button>
+      <button class="primary" id="btn-apply-sel">应用选中</button>
+      <button id="btn-dry-sel">试运行选中</button>
+    </div>
+    <div class="split">
+      <div class="tablewrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th class="c-check"><input type="checkbox" id="check-all" /></th>
+              <th class="c-id">编号</th>
+              <th>补丁</th>
+              <th class="c-layer">层级</th>
+              <th class="c-status">状态</th>
+            </tr>
+          </thead>
+          <tbody id="patch-rows"></tbody>
+        </table>
+      </div>
+      <aside class="detail" id="patch-detail">
+        <div class="panel-hd">补丁详情</div>
+        <div class="panel-bd" id="patch-detail-body"><p class="muted">在左侧选择一条补丁。</p></div>
+      </aside>
+    </div>
+  </section>
+
+
+  <!-- 注入稿 -->
+  <section class="tab" id="tab-prompt" hidden>
+    <div class="toolbar">
+      <button class="primary" id="btn-prompt-save">保存</button>
+      <button id="btn-prompt-preview">渲染预览</button>
+      <button id="btn-prompt-import">从 dsh-purge 导入</button>
+      <button id="btn-prompt-reseed">恢复出厂稿</button>
+      <select id="p-mode">
+        <option value="complete">完整模式预览</option>
+        <option value="minimal">极简模式预览</option>
+        <option value="redteam">红队模式预览</option>
+      </select>
+      <span class="spacer"></span>
+      <span class="hint" id="prompt-meta"></span>
+    </div>
+    <div class="split">
+      <textarea id="prompt-text" spellcheck="false"></textarea>
+      <aside class="detail">
+        <div class="panel-hd">体检</div>
+        <div class="panel-bd kv" id="prompt-health"></div>
+        <div class="panel-hd">渲染结果</div>
+        <pre class="out tall" id="prompt-preview"></pre>
+      </aside>
+    </div>
+  </section>
+
+  <!-- 规则 -->
+  <section class="tab" id="tab-rules" hidden>
+    <div class="toolbar">
+      <select id="r-scope">
+        <option value="global">全局（$DSH_HOME）</option>
+        <option value="workspace">当前工作区</option>
+      </select>
+      <select id="r-target">
+        <option value="AGENTS.md">AGENTS.md</option>
+        <option value="CLAUDE.md">CLAUDE.md</option>
+      </select>
+      <button class="primary" id="btn-rules-save">保存段落</button>
+      <button id="btn-rules-remove">移除段落</button>
+      <button id="btn-rules-restore">从备份还原</button>
+      <span class="spacer"></span>
+      <span class="hint" id="rules-meta"></span>
+    </div>
+    <div class="split">
+      <textarea id="rules-text" spellcheck="false" placeholder="只维护标记段内的正文；文件其它内容不会被改动。"></textarea>
+      <aside class="detail">
+        <div class="panel-hd">说明</div>
+        <div class="panel-bd">
+          <p class="muted">托管段格式：</p>
+          <pre class="out">&lt;!-- scrub:rules:begin --&gt;
+（这里的正文由面板维护）
+&lt;!-- scrub:rules:end --&gt;</pre>
+          <div class="kv" id="rules-info"></div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- 预设 -->
+  <section class="tab" id="tab-presets" hidden>
+    <div class="cols">
+      <div class="panel">
+        <div class="panel-hd">注入模式</div>
+        <div class="panel-bd" id="mode-list"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-hd">宿主预设</div>
+        <div class="panel-bd">
+          <table class="table compact">
+            <thead><tr><th>预设</th><th>来源</th><th class="c-act">当前</th></tr></thead>
+            <tbody id="preset-rows"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-hd">尾部附加段（可选）</div>
+      <div class="panel-bd form">
+        <textarea id="tail-text" rows="4" placeholder="注入在核心段之后、顺序 5100。"></textarea>
+        <button class="primary" id="btn-tail-save">保存</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div class="toast" id="toast" hidden></div>
+<!-- 用普通 script：内嵌 WebBrowser 是 IE 内核，不认 type="module"（会整段跳过） -->
+<script src="/scrub/app.js"></script>
+</body>
+</html>

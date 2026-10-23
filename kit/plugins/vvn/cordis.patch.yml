@@ -1,0 +1,78 @@
+# vvn bundle patch
+#
+# 清洗 + 演练台都在本插件内（lib/redteam、presets/redteam、skills/redteam）。
+# 只装 vvn，不外接、不 link 其它红队包。
+
+# 关掉旧的独立红队包行（若用户以前装过 dsh-redteam-mode）
+- id: redteam-store
+  name: dsh-redteam-store
+  disabled: true
+
+- id: redteam-ui
+  name: dsh-redteam-ui
+  disabled: true
+
+- id: redteam-mode
+  name: dsh-redteam-mode
+  disabled: true
+
+- id: redteam-mode-store
+  name: dsh-redteam-mode/store
+  disabled: true
+
+- id: redteam-mode-ui
+  name: dsh-redteam-mode/ui
+  disabled: true
+
+- id: system-prompt
+  config:
+    includeHarnessIdentity: false
+    personaPrefix: ""
+    personaSuffix: Your working directory is {{cwd}}.
+
+- id: vvn
+  inject: [systemPrompt, tools]
+
+- insert:
+    - id: vvn
+      name: 'vvn'
+      inject: [systemPrompt, tools]
+      config:
+        enabled: true
+        autoApplyOnStart: false
+        autoUpdateOnStart: false
+        autoRevertOnMissing: false
+        injectOnce: false
+        stripMnemon: true
+        verbose: false
+        postPrompt: ""
+        postPromptOrder: 5100
+        autoRetry: true
+        retryMax: 3
+        autoContinue: false
+        continueMax: 3
+        continueText: "继续"
+        capabilityProtocol: true
+        hooksDenyBypass: true
+
+    # 演练台三项已移除。
+    #
+    # 去掉的原因：这三项是 dsh 网页里的整套建模界面（预设、SQLite 事实库、
+    # HTTP 桥）。界面统一走 vvn.exe，不再在 dsh 里另外挂一套。
+    #
+    # 移除是安全的：清洗功能靠的是上面 vvn 那两项（systemPrompt / tools 注入），
+    # 跟这三个界面挂载点无关。实测移除后补丁计数与清洗结果不变。
+    #
+    # 如果以后想把演练台装回来，把下面三行取消注释即可 ——
+    # lib/redteam 的代码还在，没有删。
+    #
+    # - id: vvn-redteam
+    #   name: vvn/redteam
+    #
+    # - id: vvn-redteam-store
+    #   name: vvn/redteam/store
+    #   config:
+    #     root: !!js dshHomePath('redteam')
+    #
+    # - id: vvn-redteam-ui
+    #   name: vvn/redteam/ui

@@ -1,0 +1,55 @@
+{
+  "name": "dsh-scrub",
+  "version": "0.1.0",
+  "description": "DeepSeek Harness 宿主清洗：与 dsh-purge 功能等价的一套重写（同 82 条补丁、不同执行器、不同面板 UI）。Host scrubber — functionally equivalent rewrite of dsh-purge with its own engine and a terminal-style panel.",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": {
+      "default": "./lib/index.js"
+    },
+    "./engine": "./lib/engine.js",
+    "./state": "./lib/state.js",
+    "./prompt": "./lib/prompt.js",
+    "./vault": "./lib/vault.js",
+    "./server": "./lib/server.js",
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "scrub": "bin/scrub.js"
+  },
+  "files": [
+    "lib",
+    "bin",
+    "ui",
+    "tools",
+    "cordis.patch.yml",
+    "README.md"
+  ],
+  "scripts": {
+    "gen-table": "node tools/gen-table.mjs",
+    "seal-prompt": "node tools/seal-prompt.mjs",
+    "verify": "node tools/verify.mjs",
+    "panel": "node bin/scrub.js serve"
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "harness-scrub",
+    "prompt-injection",
+    "panel"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}

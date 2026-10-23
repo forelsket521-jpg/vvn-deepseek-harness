@@ -1,0 +1,63 @@
+﻿{
+    "name":  "vvn",
+    "version":  "1.1.71",
+    "description":  "DeepSeek Harness 鐮寸敳锛氳鎵€鏈夋ā鍨嬮兘鑳界牬鐢诧紝涓嶅悓妯″瀷鍙崲涓嶅悓鎻愮ず璇嶏紱榛樿鎻愮ず璇嶉潰鍚戝浗妯°€屽皬鐮侀叡銆嶃€侸ailbreak for every model 鈥?swap prompts per model. 姹?Star 鏀惰棌 猸?濡傝浜屽紑锛岃鏌ョ湅缃插悕瑕佹眰閮ㄥ垎",
+    "type":  "module",
+    "main":  "lib/index.js",
+    "exports":  {
+                    ".":  {
+                              "default":  "./lib/index.js"
+                          },
+                    "./redteam":  "./lib/redteam/index.js",
+                    "./redteam/store":  "./lib/redteam/store.js",
+                    "./redteam/ui":  "./lib/redteam/ui.js",
+                    "./redteam/tools":  "./lib/redteam/tools.js",
+                    "./package.json":  "./package.json"
+                },
+    "bin":  {
+                "vvn":  "bin/vvn.js"
+            },
+    "files":  [
+                  "lib",
+                  "!lib/default-prompt-inject.md",
+                  "bin",
+                  "docs",
+                  "presets",
+                  "skills",
+                  "scripts",
+                  "cordis.patch.yml",
+                  "screenshots.json",
+                  "LICENSE"
+              ],
+    "license":  "MIT",
+    "keywords":  [
+                     "dsh",
+                     "dsh-plugin",
+                     "dsh-plugins",
+                     "缃戠粶瀹夊叏",
+                     "绾㈤槦璇勬祴",
+                     "llm-security",
+                     "harness-security",
+                     "deepseek-harness",
+                     "red-team",
+                     "instructions",
+                     "rules",
+                     "prompt-eval",
+                     "agent"
+                 ],
+    "dsh":  {
+                "bundle":  {
+                               "patch":  "./cordis.patch.yml"
+                           }
+            },
+    "publishConfig":  {
+                          "access":  "public"
+                      },
+    "peerDependencies":  {
+                             "@deepseek-ai/cordis":  "^4.0.1"
+                         },
+    "engines":  {
+                    "node":  "\u003e=18"
+                },
+    "dshTarget":  "0.2.0-rc.2"
+}

@@ -1,0 +1,35 @@
+# 运行时生成的临时文件 —— 每次自检都会重建，不该进仓库
+vvn-check.txt
+vvn-install.txt
+vvn-find.txt
+vvn-selftest.txt
+vvn-restore-test.txt
+
+# 备份文件（改代码时留的对照）
+*.bak
+*.pre-*.bak
+*.vvntest.bak
+
+# 编译中间产物
+*.pdb
+*.obj
+bin/
+obj/
+_rt*.exe
+*_test-restore.cs
+testrestore.cs
+
+# 打包产物（发 Release 用，不进源码树）
+vvn-v*.zip
+vvn-v*.rar
+
+# 编辑器
+.vs/
+.vscode/
+.idea/
+*.swp
+
+# 系统
+Thumbs.db
+desktop.ini
+.DS_Store
